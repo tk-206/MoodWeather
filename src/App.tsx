@@ -1,34 +1,27 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect } from "react"
+import MoodSelector from "./components/MoodSelector"
+import MoodDisplay from "./components/MoodDisplay"
+import { saveMood, loadMood } from "./utils/storage"
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [mood, setMood] = useState<string | null>(null)
+
+  useEffect(() => {
+    const saved = loadMood()
+    if (saved) setMood(saved)
+  }, [])
+
+  const handleSelectMood = (selected: string) => {
+    setMood(selected)
+    saveMood(selected)
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-b from-sky-100 to-blue-200">
+      <h1 className="text-5xl font-bold mb-6 text-blue-700">MoodWeather</h1>
+      <MoodDisplay mood={mood} />
+      <MoodSelector onSelect={handleSelectMood} />
+    </div>
   )
 }
 
